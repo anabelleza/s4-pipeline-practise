@@ -79,7 +79,7 @@ echo $?
         stage('cleaning') {
             steps {
                 sh '''
-                ls 
+               
 		uname -r
                 '''
             }
