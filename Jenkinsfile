@@ -80,7 +80,7 @@ echo $?
             steps {
                 sh '''
                 ls 
-		ls
+		uname -r
                 '''
             }
         }
