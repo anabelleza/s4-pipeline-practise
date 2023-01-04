@@ -80,28 +80,27 @@ echo $?
             steps {
                 sh '''
                 ls 
-		uname -r
                 '''
             }
         }
 
-    stage('SonarQube analysis') {
-            agent {
-                docker {
-                  image 'sonarsource/sonar-scanner-cli:4.7.0'
-                }
-               }
-               environment {
-        CI = 'true'
-        //  scannerHome = tool 'Sonar'
-        scannerHome='/opt/sonar-scanner'
-    }
-            steps{
-                withSonarQubeEnv('Sonar') {
-                    sh "${scannerHome}/bin/sonar-scanner"
-                }
-            }
-        }
+    // stage('SonarQube analysis') {
+    //         agent {
+    //             docker {
+    //               image 'sonarsource/sonar-scanner-cli:4.7.0'
+    //             }
+    //            }
+    //            environment {
+    //     CI = 'true'
+    //     //  scannerHome = tool 'Sonar'
+    //     scannerHome='/opt/sonar-scanner'
+    // }
+    //         steps{
+    //             withSonarQubeEnv('Sonar') {
+    //                 sh "${scannerHome}/bin/sonar-scanner"
+    //             }
+    //         }
+    //     }
 
         stage('build-dev') {
          when{ 
@@ -111,20 +110,21 @@ echo $?
             steps {
                 sh '''
 cd UI
-docker build -t devopseasylearning2021/s4-ui:${BUILD_NUMBER}$UITag .
+docker build -t devopseasylearning2021/s4-ui:${BUILD_NUMBER}-$UITag .
 cd -
 cd DB
-docker build -t devopseasylearning2021/s4-db:${BUILD_NUMBER}$DBTag .
+docker build -t devopseasylearning2021/s4-db:${BUILD_NUMBER}-$DBTag .
 cd -
 cd auth 
-docker build -t devopseasylearning2021/s4-auth:${BUILD_NUMBER}$AUTHTag .
+docker build -t devopseasylearning2021/s4-auth:${BUILD_NUMBER}-$AUTHTag .
 cd -
 cd weather 
-docker build -t devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag .
+docker build -t devopseasylearning2021/s4-weather:${BUILD_NUMBER}-$WEATHERTag .
 cd -
                 '''
             }
-        }
+        }  
+
 
         stage('build-sanbox') {
           when{ 
@@ -134,16 +134,16 @@ cd -
             steps {
                 sh '''
 cd UI
-docker build -t devopseasylearning2021/s4-ui:${BUILD_NUMBER}$UITag .
+docker build -t devopseasylearning2021/s4-ui:${BUILD_NUMBER}-$UITag .
 cd -
 cd DB
-docker build -t devopseasylearning2021/s4-db:${BUILD_NUMBER}$DBTag .
+docker build -t devopseasylearning2021/s4-db:${BUILD_NUMBER}-$DBTag .
 cd -
 cd auth 
-docker build -t devopseasylearning2021/s4-auth:${BUILD_NUMBER}$AUTHTag .
+docker build -t devopseasylearning2021/s4-auth:${BUILD_NUMBER}-$AUTHTag .
 cd -
 cd weather 
-docker build -t devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag .
+docker build -t devopseasylearning2021/s4-weather:${BUILD_NUMBER}-$WEATHERTag .
 cd -
                 '''
             }
@@ -158,16 +158,16 @@ cd -
             steps {
                 sh '''
 cd UI
-docker build -t devopseasylearning2021/s4-ui:${BUILD_NUMBER}$UITag .
+docker build -t devopseasylearning2021/s4-ui:${BUILD_NUMBER}-$UITag .
 cd -
 cd DB
-docker build -t devopseasylearning2021/s4-db:${BUILD_NUMBER}$DBTag .
+docker build -t devopseasylearning2021/s4-db:${BUILD_NUMBER}-$DBTag .
 cd -
 cd auth 
-docker build -t devopseasylearning2021/s4-auth:${BUILD_NUMBER}$AUTHTag .
+docker build -t devopseasylearning2021/s4-auth:${BUILD_NUMBER}-$AUTHTag .
 cd -
 cd weather 
-docker build -t devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag .
+docker build -t devopseasylearning2021/s4-weather:${BUILD_NUMBER}-$WEATHERTag .
 cd -
                 '''
             }
@@ -188,10 +188,10 @@ echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u devopseasylearning2021 --passw
                 }
             steps {
                 sh '''
-docker push devopseasylearning2021/s4-ui:${BUILD_NUMBER}$UITag 
-docker push devopseasylearning2021/s4-db:${BUILD_NUMBER}$DBTag 
-docker push devopseasylearning2021/s4-auth:${BUILD_NUMBER}$AUTHTag 
-docker push devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag 
+docker push devopseasylearning2021/s4-ui:${BUILD_NUMBER}-$UITag 
+docker push devopseasylearning2021/s4-db:${BUILD_NUMBER}-$DBTag 
+docker push devopseasylearning2021/s4-auth:${BUILD_NUMBER}-$AUTHTag 
+docker push devopseasylearning2021/s4-weather:${BUILD_NUMBER}-$WEATHERTag 
                 '''
             }
         }
@@ -206,7 +206,7 @@ docker push devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag
 docker push devopseasylearning2021/s4-ui:${BUILD_NUMBER}$UITag 
 docker push devopseasylearning2021/s4-db:${BUILD_NUMBER}$DBTag 
 docker push devopseasylearning2021/s4-auth:${BUILD_NUMBER}$AUTHTag 
-docker push devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag 
+docker push devopseasylearning2021/s4-weather:${BUILD_NUMBER}-$WEATHERTag 
                 '''
             }
         }
@@ -218,49 +218,153 @@ docker push devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag
                 }
             steps {
                 sh '''
-docker push devopseasylearning2021/s4-ui:${BUILD_NUMBER}$UITag 
-docker push devopseasylearning2021/s4-db:${BUILD_NUMBER}$DBTag 
-docker push devopseasylearning2021/s4-auth:${BUILD_NUMBER}$AUTHTag 
-docker push devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag 
+docker push devopseasylearning2021/s4-ui:${BUILD_NUMBER}-$UITag 
+docker push devopseasylearning2021/s4-db:${BUILD_NUMBER}-$DBTag 
+docker push devopseasylearning2021/s4-auth:${BUILD_NUMBER}-$AUTHTag 
+docker push devopseasylearning2021/s4-weather:${BUILD_NUMBER}-$WEATHERTag 
                 '''
             }
         }
 
-        stage('update helm charts-dev') {
-            steps {
-                sh '''
-                ls 
-                pwd
-                '''
+    stage('update helm charts-dev') {
+         when{ 
+          expression {
+            env.Environment == 'DEV' }
             }
-        }
+	      steps {
+	        script {
+	          withCredentials([
+	            string(credentialsId: 'eric-image', variable: 'TOKEN')
+	          ]) {
 
-        stage('update helm charts-sanbox') {
-            steps {
-                sh '''
-                ls 
-                pwd
-                '''
-            }
-        }
+	            sh '''
+                 git config --global user.name "devopseasylearning"
+                 git config --global user.email info@devopseasylearning.com
+                rm -rf s3-pipeline-practise--charts || true
+                git clone  https://devopseasylearning:$TOKEN@github.com/devopseasylearning/s3-pipeline-practise--charts.git
+                cd s3-pipeline-practise--charts
+cat <<EOF > dev-values.yaml           
+        image:
+          db:
+             repository: devopseasylearning2021/s4-db
+             tag: "${BUILD_NUMBER}-$DBTag"
+          ui:
+             repository: devopseasylearning2021/s4-ui
+             tag: "${BUILD_NUMBER}-$UITag"
+          auth:
+             repository: devopseasylearning2021/s4-auth
+             tag: "${BUILD_NUMBER}-$AUTHTag"
+          weather:
+             repository: devopseasylearning2021/s4-weather
+             tag: "${BUILD_NUMBER}-$WEATHERTag"
+EOF
+                git add -A 
+                git commit -m "testing jenkins"
+                git push https://devopseasylearning:$TOKEN@github.com/devopseasylearning/s3-pipeline-practise--charts.git || true
 
-        stage('update helm charts-prod') {
-            steps {
-                sh '''
-                ls 
-                pwd
-                '''
-            }
-        }
+	            '''
+	          }
 
-        stage('wait for argocd') {
-            steps {
-                sh '''
-                ls 
-                pwd
-                '''
+	        }
+
+	      }
+
+	    }
+
+
+    stage('update helm charts-sanbox') {
+         when{ 
+          expression {
+            env.Environment == 'SANBOX' }
             }
-        }
+	      steps {
+	        script {
+	          withCredentials([
+	            string(credentialsId: 'eric-image', variable: 'TOKEN')
+	          ]) {
+
+	            sh '''
+                 git config --global user.name "devopseasylearning"
+                 git config --global user.email info@devopseasylearning.com
+                rm -rf s3-pipeline-practise--charts || true
+                git clone  https://devopseasylearning:$TOKEN@github.com/devopseasylearning/s3-pipeline-practise--charts.git
+                cd s3-pipeline-practise--charts
+cat <<EOF > sanbox-values.yaml           
+        image:
+          db:
+             repository: devopseasylearning2021/s4-db
+             tag: "${BUILD_NUMBER}-$DBTag"
+          ui:
+             repository: devopseasylearning2021/s4-ui
+             tag: "${BUILD_NUMBER}-$UITag"
+          auth:
+             repository: devopseasylearning2021/s4-auth
+             tag: "${BUILD_NUMBER}-$AUTHTag"
+          weather:
+             repository: devopseasylearning2021/s4-weather
+             tag: "${BUILD_NUMBER}-$WEATHERTag"
+EOF
+                git add -A 
+                git commit -m "testing jenkins"
+                git push https://devopseasylearning:$TOKEN@github.com/devopseasylearning/s3-pipeline-practise--charts.git  || true
+
+	            '''
+	          }
+
+	        }
+
+	      }
+
+	    }
+
+
+
+    stage('update helm charts-prod') {
+         when{ 
+          expression {
+            env.Environment == 'PROD' }
+            }
+	      steps {
+	        script {
+	          withCredentials([
+	            string(credentialsId: 'eric-image', variable: 'TOKEN')
+	          ]) {
+
+	            sh '''
+                 git config --global user.name "devopseasylearning"
+                 git config --global user.email info@devopseasylearning.com
+                rm -rf s3-pipeline-practise--charts || true
+                git clone  https://devopseasylearning:$TOKEN@github.com/devopseasylearning/s3-pipeline-practise--charts.git
+                cd s3-pipeline-practise--charts
+cat <<EOF > prod-values.yaml           
+        image:
+          db:
+             repository: devopseasylearning2021/s4-db
+             tag: "${BUILD_NUMBER}-$DBTag"
+          ui:
+             repository: devopseasylearning2021/s4-ui
+             tag: "${BUILD_NUMBER}-$UITag"
+          auth:
+             repository: devopseasylearning2021/s4-auth
+             tag: "${BUILD_NUMBER}-$AUTHTag"
+          weather:
+             repository: devopseasylearning2021/s4-weather
+             tag: "${BUILD_NUMBER}-$WEATHERTag"
+EOF
+                git add -A 
+                git commit -m "testing jenkins"
+                git push https://devopseasylearning:$TOKEN@github.com/devopseasylearning/s3-pipeline-practise--charts.git  || true
+
+	            '''
+	          }
+
+	        }
+
+	      }
+
+	    }
+
+
 
 
         
@@ -291,5 +395,7 @@ docker push devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag
 
 	
 }
+
+
 
 
