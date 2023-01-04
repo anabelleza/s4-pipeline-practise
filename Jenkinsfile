@@ -79,7 +79,8 @@ echo $?
         stage('cleaning') {
             steps {
                 sh '''
-                ls 
+                ls
+		pwd
                 '''
             }
         }
